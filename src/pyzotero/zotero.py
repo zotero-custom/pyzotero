@@ -16,6 +16,7 @@ import threading
 import time
 import uuid
 import zipfile
+from typing import Optional
 from collections import OrderedDict
 from functools import wraps
 from pathlib import Path, PurePosixPath
@@ -265,15 +266,19 @@ class Zotero:
         preserve_json_order=False,
         locale="en-US",
         local=False,
+        endpoint=None,
     ):
         self.client = None
         """Store Zotero credentials"""
-        if not local:
+        if not local and not endpoint:
             self.endpoint = "https://api.zotero.org"
             self.local = False
         else:
-            self.endpoint = "http://localhost:23119/api"
             self.local = True
+            if not endpoint:
+                self.endpoint = "http://localhost:23119/api"
+            else:
+                self.endpoint = endpoint
         if library_id is not None and library_type:
             self.library_id = library_id
             # library_type determines whether query begins w. /users or /groups
